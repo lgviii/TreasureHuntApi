@@ -3,6 +3,8 @@
 *.lock
 *.json
 *.dtbcache
+*ide-shm*
+*ide-wal*
 
 #Junk Files
 *.DS_Store

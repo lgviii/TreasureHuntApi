@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace JWT.Controllers
 {
     [Route("api/[controller]")]
-    public class BooksController : Controller
+    public class HuntController : Controller
     {
         [HttpGet, Authorize]
         public IEnumerable<Book> Get()
@@ -37,11 +37,43 @@ namespace JWT.Controllers
             return resultBookList;
         }
 
+        [Route("/EasyGet")]
+        [HttpGet]
+        public IEnumerable<Hunt> GetWithNoAuth()
+        {
+            var currentUser = HttpContext.User;
+            int userAge = 0;
+            var resultBookList = new Hunt[] {
+              new Hunt { Author = "Ray Bradbury", Title = "Puzzle 1" },
+              new Hunt { Author = "Gabriel García Márquez", Title = "Scavenger Hunt" },
+
+            };
+
+            if (currentUser.HasClaim(c => c.Type == ClaimTypes.DateOfBirth))
+            {
+                DateTime birthDate = DateTime.Parse(currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.DateOfBirth).Value);
+                userAge = DateTime.Today.Year - birthDate.Year;
+            }
+
+            return resultBookList;
+        }
+
         public class Book
         {
             public string Author { get; set; }
             public string Title { get; set; }
             public bool AgeRestriction { get; set; }
+        }
+
+        public class Hunt
+        {
+            public string Author { get; set; }
+            public string Title { get; set; }
+
+            public DateTime Created { get; set; }
+            public DateTime LastModified { get; set; }
+            public string Question { get; set; }
+            public string Answer { get; set; }
         }
     }
 }
